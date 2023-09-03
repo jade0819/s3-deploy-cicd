@@ -5,19 +5,18 @@ on:
   push:
     branches:
     - main
-  workflow_dispatch:
 
 # 여러개의 job을 설정할 수 있지만 여기선 cicd job만 설정 했습니다. 
 jobs:
   cicd:
-		# 실행되는 서버 정보 (그대로 쓰면 됩니다.)
+    # 실행되는 서버 정보 (그대로 쓰면 됩니다.)
     runs-on: ubuntu-latest
-		# 순서대로 실행됩니다!
+    # 순서대로 실행됩니다!
     steps:
-		# name은 실행될 때 뜨는 안내문? 같은거고 실제로 실행되는 명령문은 uses나 run에 작성된 내용이 실행됩니다.
+    # name은 실행될 때 뜨는 안내문? 같은거고 실제로 실행되는 명령문은 uses나 run에 작성된 내용이 실행됩니다.
     - name: Git checkout😉
 			# actions/checkout@v3이 최신 버전이지만 에러가 나서 v2를 사용했습니다..! v3로 해보고 안되면 다운그레이드 하면 됩니다.
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Run "✏️ Remove node_modules and Install node packages"
       run: npm ci
     - name: Run "⚒️ Project build"
@@ -26,11 +25,11 @@ jobs:
 			# 여기부턴 S3에 배포하기 위한 세팅입니다! jakejarvis가 누구지? 싶지만 그대로 작성해주세요
       uses: jakejarvis/s3-sync-action@master
       with:
-        args: --acl public-read --follow-symlinks --delete
+        args: --delete
       env:
 				# SOURCE_DIR: 빌드하면 생성되는 폴더 이름을 써주세요.
-        SOURCE_DIR: './dist'
-        AWS_REGION: 'ap-northeast-2'
         AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: 'ap-northeast-2'
+        SOURCE_DIR: 'build'
