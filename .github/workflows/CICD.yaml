@@ -5,7 +5,6 @@ on:
   push:
     branches:
     - main
-  workflow_dispatch:
 
 # 여러개의 job을 설정할 수 있지만 여기선 cicd job만 설정 했습니다. 
 jobs:
@@ -33,4 +32,4 @@ jobs:
         # AWS 서버 지역
         AWS_REGION: 'ap-northeast-2'
         # SOURCE_DIR: 빌드하면 생성되는 폴더 이름을 입력
-        SOURCE_DIR: 'build'
+        SOURCE_DIR: './dist'
