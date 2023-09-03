@@ -1,31 +1,46 @@
 name: CI/CD
 
+# main에 push 이벤트가 발생하면 트리거가 되어서 workflow 실행 됨
 on:
   push:
     branches:
       - main
 
+# 여러개의 job을 설정할 수 있지만, job 1개만 설정함(cicd: job 이름)
 jobs:
   cicd:
+		# runs = runners = 서버 / ubuntu-latest = 운영체제
     runs-on: ubuntu-latest
     steps:
+			# main 브랜치로 checkout 해라. (name은 해당 action의 제목)
       - name: "Branch checkout"
+				# github 공식 checkout 액션 라이브러리
         uses: actions/checkout@v3
         with:
           ref: "main"
+			# node_modules 삭제 후 npm 설치
       - name: "npm clear(remove node_modules) and npm install"
         run: npm ci
+			# App 컴포넌트 test (하위컴포넌트 포함)"
       - name: "App Test"
         run: npm run test
+			# 프로젝트 빌드
       - name: "Project build"
         run: npm run build
+			# AWS S3 버킷에 연결해서 빌드 폴더 안에 내용 업로드
       - name: "deploy to AWS S3 bukit"
+				# s3-sync 액션 라이브러리 적용
         uses: jakejarvis/s3-sync-action@master
         with:
+					# 기존 파일 삭제 후 업로드하라는 명령어
           args: --delete
+				# 환경변수 설정
         env:
+					# GitHub repository에 정의한 secret key 가져와서 적용
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+					# AWS 서버 지역
           AWS_REGION: "ap-northeast-2"
+					# 소스 폴더 지정
           SOURCE_DIR: "build"
