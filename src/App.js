@@ -13,7 +13,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          완전 자동 빌드!!!!!!!!!
+          Learn React
         </a>
       </header>
     </div>
