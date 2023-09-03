@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Branch checkout"
-      - name: "npm clear(remove node_modules) and npm install"
         uses: actions/checkout@v3
         with:
           ref: "main"
