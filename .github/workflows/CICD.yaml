@@ -5,6 +5,7 @@ on:
   push:
     branches:
     - main
+  workflow_dispatch:
 
 # 여러개의 job을 설정할 수 있지만 여기선 cicd job만 설정 했습니다. 
 jobs:
