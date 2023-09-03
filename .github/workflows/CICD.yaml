@@ -18,7 +18,7 @@ jobs:
       - name: "App Test"
         run: npm run test
       - name: "Project build"
-      - run: npm run build
+        run: npm run build
       - name: "deploy to AWS S3 bukit"
         uses: jakejarvis/s3-sync-action@master
         with:
