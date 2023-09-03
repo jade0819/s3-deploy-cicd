@@ -9,7 +9,7 @@ on:
 # 여러개의 job을 설정할 수 있지만, job 1개만 설정함(cicd: job 이름)
 jobs:
   cicd:
-		# runs = runners = 서버 / ubuntu-latest = 운영체제
+    # runs = runners = 서버, ubuntu-latest = 운영체제
     runs-on: ubuntu-latest
     steps:
 			# main 브랜치로 checkout 해라. (name은 해당 action의 제목)
