@@ -1,27 +1,35 @@
 name: CI/CD
 
+# main에 push 이벤트가 발생하면 트리거가 되어서 workflow 실행 됨
 on:
   push:
     branches:
     - main
 
+# 여러개의 job을 설정할 수 있지만 여기선 cicd job만 설정 했습니다. 
 jobs:
   cicd:
+		# runners = 컴퓨터(실행되는 서버), ubuntu-latest: 리눅스 서버의 OS명
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-			with:
-				ref: "main"
-    - run: npm ci
-    - run: npm run test
-    - run: npm run build
-    - name: deploy to s3
+		# name은 실행될 때 뜨는 제목이고, 실제로 실행되는 명령문은 uses나 run에 작성된 내용이 실행된다.
+    - name: Git checkout
+			# actions/checkout@v3이 최신 버전이지만 에러가 나서 v2를 사용했습니다..! v3로 해보고 안되면 다운그레이드 하면 된다.
+      uses: actions/checkout@v2
+    - name: Run "Remove node_modules and Install node packages"
+      run: npm ci
+    - name: Run "Project build"
+      run: npm run build
+    - name: Run "Deploy to S3"
+			# S3에 배포하기 위한 세팅 - s3 sync 라이브러리 적용
       uses: jakejarvis/s3-sync-action@master
       with:
-        args: --delete
+        args: --acl public-read --follow-symlinks --delete
       env:
         AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        # AWS 서버 지역
         AWS_REGION: 'ap-northeast-2'
+        # SOURCE_DIR: 빌드하면 생성되는 폴더 이름을 입력
         SOURCE_DIR: 'build'
